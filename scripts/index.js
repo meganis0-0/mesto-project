@@ -21,6 +21,9 @@ const profileAddButton = document.querySelector('.profile__add-button');
 const profileAddButtonClose = document.querySelector('.popup_type_new-card .popup__close');
 const cardForm = document.querySelector('.popup_type_new-card .popup__form');
 
+//Initialize image popup buttons
+const imagePopupCloseButton = document.querySelector('.popup_type_image .popup__close');
+
 
 //Events for edit profile
 profileEditButton.addEventListener('click', () => {
@@ -86,6 +89,10 @@ profileAddButtonClose.addEventListener('click', () => {
     closeModal(cardPopup);
 })
 
+imagePopupCloseButton.addEventListener('click', () => {
+    closeModal(imagePopup);
+})
+
 /**
  * Function for open popup
  * @param {popup} popup - popup
@@ -123,9 +130,16 @@ function createCard(card) {
             cardElement.remove();
         })
 
+        const imageButton = cardElement.querySelector('.card__image');
+        imageButton.addEventListener('click', () => {
+            imagePopup.classList.add('popup_is-opened');
+            imagePopup.querySelector('.popup__image').src = card.link;
+            imagePopup.querySelector('.popup__image').alt = card.name;
+            imagePopup.querySelector('.popup__caption').textContent = card.name;
+        })
+
         return cardElement;
 }
-
 
 
 
@@ -135,3 +149,7 @@ initialCards.forEach((card) => {
     cardContainer.append(cardElement);
 })
 
+//Add open animation for each popup
+profilePopup.classList.add('popup_is-animated')
+cardPopup.classList.add('popup_is-animated')
+imagePopup.classList.add('popup_is-animated')
