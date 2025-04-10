@@ -1,4 +1,5 @@
-//import '../pages/index.css'
+import '../pages/index.css'
+import { initialCards } from './cards.js';
 
 //Initialize all popups
 const profilePopup = document.querySelector('.popup_type_edit');

@@ -4,66 +4,71 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-    entry: {main: './src/scripts/index.js'},
-    output: {
-        path: path.resolve(__dirname, 'dist'),    // путь к папке, где будет лежать собранный файл
-        filename: 'main.js',                        // название собранного файла
-            publicPath: '/'                         // путь к файлу на сервере
+  entry: { main: './src/scripts/index.js' },
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'main.js',
+    publicPath: '/', // Важно для корректного разрешения путей в CSS и HTML
+    assetModuleFilename: 'images/[name][ext]' // Универсальное правило для всех ассетов
+  },
+  mode: 'development',
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist'), // Новый синтаксис для static
+      watch: true, // Автоматическая перезагрузка при изменениях
     },
-    mode: 'development',
-    devServer: {
-        static: path.resolve(__dirname, './dist'),
-        compress: true,
-        port: 8080,
-
-        open: true, 
-    },
-
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env']
-                    }
-                }
-            },
-            // добавили правило для обработки файлов
-            {
-                // регулярное выражение, которое ищет все файлы с такими расширениями
-                test: /\.(png|svg|jpg|gif|woff(2)?|eot|ttf|otf)$/,
-                type: 'asset/resource'
-            },     
-            
-            {
-                test: /\.css$/,
-                use: [
-                    MiniCssExtractPlugin.loader, {
-                        loader: 'css-loader',
-
-                        options: {
-                            importLoaders: 1
-                        }
-                    },
-
-                    'postcss-loader'
-                ]
-
+    compress: true,
+    port: 8080,
+    open: true,
+    hot: true, // Включение Hot Module Replacement
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+            cacheDirectory: true // Кеширование для ускорения сборки
+          }
+        }
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif|woff(2)?|eot|ttf|otf)$/,
+        type: 'asset/resource', // Автоматическая обработка ресурсов
+        generator: {
+          filename: 'images/[name][ext]' // Сохранять в dist/images
+        }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader, // Извлечение CSS в отдельный файл
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              esModule: false // Решение проблем с относительными путями
             }
+          },
+          'postcss-loader' // Постобработка CSS
         ]
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: './src/index.html'       
-        }),
-        new CleanWebpackPlugin(),
-        new MiniCssExtractPlugin(
-            {
-                filename: 'style.css'
-            }
-        ),
+      }
     ]
-}
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      minify: { // Минификация HTML в production
+        collapseWhitespace: true,
+        removeComments: true
+      }
+    }),
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'style.css' // Имя выходного CSS-файла
+    }),
+  ]
+};
