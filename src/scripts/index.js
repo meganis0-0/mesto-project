@@ -1,10 +1,22 @@
 import '../pages/index.css'
 import { initialCards } from './cards.js';
 
+// Create object which contains validation classes
+const validationSettings = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible'
+  }
+
 //Initialize all popups
+const popupList = document.querySelectorAll('.popup');
 const profilePopup = document.querySelector('.popup_type_edit');
 const cardPopup = document.querySelector('.popup_type_new-card');
 const imagePopup = document.querySelector('.popup_type_image');
+let currentOpenPopup = null;
 
 //Initialize template for cards
 const cardTemplate = document.querySelector('#card-template').content;
@@ -59,7 +71,7 @@ profileEditButton.addEventListener('click', () => {
 })
 
 profileEditCloseButton.addEventListener('click', () => {
-    closeModal(profilePopup);
+    closeModal(currentOpenPopup);
 })
 
 
@@ -89,11 +101,11 @@ function handleCardFormSubmit(evt) {
 cardPopup.addEventListener('submit', handleCardFormSubmit);
 
 profileAddButtonClose.addEventListener('click', () => {
-    closeModal(cardPopup);
+    closeModal(currentOpenPopup);
 })
 
 imagePopupCloseButton.addEventListener('click', () => {
-    closeModal(imagePopup);
+    closeModal(currentOpenPopup);
 })
 
 /**
@@ -102,6 +114,9 @@ imagePopupCloseButton.addEventListener('click', () => {
  */
 function openModal(popup) {
     popup.classList.add('popup_is-opened');
+    currentOpenPopup = popup;
+
+    popup.addEventListener('mousedown', handleOverlayClose);
 }
 
 /**
@@ -110,6 +125,33 @@ function openModal(popup) {
  */
 function closeModal(popup) {
     popup.classList.remove('popup_is-opened');
+    currentOpenPopup = null;
+
+    popup.removeEventListener('mousedown', handleOverlayClose);
+}
+
+/**
+ * Function for close popup by ESC
+ * @param {Event} evt 
+ */
+function handleEscClose(evt) {
+    if (evt.key === 'Escape' && currentOpenPopup) {
+        closeModal(currentOpenPopup);
+    }
+}
+
+/**
+ * Function for close popup by overlay click
+ * @param {Event} evt 
+ */
+function handleOverlayClose(evt) {
+    if (
+        evt.target === evt.currentTarget &&
+        currentOpenPopup &&
+        !evt.target.closest('.popup__content')
+    ) {
+        closeModal(currentOpenPopup);
+    }
 }
 
 /**
@@ -145,6 +187,12 @@ function createCard(card) {
 }
 
 
+const formsList = document.querySelectorAll('.popup__form');
+console.log(formsList);
+
+
+//Add event listener to document for closing popup by pressing Esc
+document.addEventListener('keydown', handleEscClose);
 
 //When page open --> create card for each element of array from cards.js
 initialCards.forEach((card) => {
@@ -156,3 +204,57 @@ initialCards.forEach((card) => {
 profilePopup.classList.add('popup_is-animated')
 cardPopup.classList.add('popup_is-animated')
 imagePopup.classList.add('popup_is-animated')
+
+
+// validation.js
+const showInputError = (formElement, inputElement, errorMessage, settings) => {
+    const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+    inputElement.classList.add(settings.inputErrorClass);
+    errorElement.textContent = errorMessage;
+    errorElement.classList.add(settings.errorClass);
+  };
+  
+  const hideInputError = (formElement, inputElement, settings) => {
+    const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+    inputElement.classList.remove(settings.inputErrorClass);
+    errorElement.classList.remove(settings.errorClass);
+    errorElement.textContent = '';
+  };
+  
+  const checkInputValidity = (formElement, inputElement, settings) => {
+    if (!inputElement.validity.valid) {
+      showInputError(formElement, inputElement, inputElement.validationMessage, settings);
+    } else {
+      hideInputError(formElement, inputElement, settings);
+    }
+  };
+  
+  const toggleButtonState = (inputList, buttonElement, settings) => {
+    const hasInvalidInput = inputList.some(inputElement => !inputElement.validity.valid);
+    buttonElement.disabled = hasInvalidInput;
+    buttonElement.classList.toggle(settings.inactiveButtonClass, hasInvalidInput);
+  };
+  
+  const setEventListeners = (formElement, settings) => {
+    const inputList = Array.from(formElement.querySelectorAll(settings.inputSelector));
+    const buttonElement = formElement.querySelector(settings.submitButtonSelector);
+  
+    inputList.forEach(inputElement => {
+      inputElement.addEventListener('input', () => {
+        checkInputValidity(formElement, inputElement, settings);
+        toggleButtonState(inputList, buttonElement, settings);
+      });
+    });
+    
+    toggleButtonState(inputList, buttonElement, settings);
+  };
+  
+  const enableValidation = (settings) => {
+    const formList = Array.from(document.querySelectorAll(settings.formSelector));
+    formList.forEach(formElement => {
+      formElement.addEventListener('submit', evt => evt.preventDefault());
+      setEventListeners(formElement, settings);
+    });
+  };
+  
+enableValidation(validationSettings);
