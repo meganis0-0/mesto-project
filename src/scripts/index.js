@@ -2,9 +2,11 @@ import '../pages/index.css'
 import { initialCards } from './cards.js';
 
 //Initialize all popups
+const popupList = document.querySelectorAll('.popup');
 const profilePopup = document.querySelector('.popup_type_edit');
 const cardPopup = document.querySelector('.popup_type_new-card');
 const imagePopup = document.querySelector('.popup_type_image');
+let currentOpenPopup = null;
 
 //Initialize template for cards
 const cardTemplate = document.querySelector('#card-template').content;
@@ -59,7 +61,7 @@ profileEditButton.addEventListener('click', () => {
 })
 
 profileEditCloseButton.addEventListener('click', () => {
-    closeModal(profilePopup);
+    closeModal(currentOpenPopup);
 })
 
 
@@ -89,11 +91,11 @@ function handleCardFormSubmit(evt) {
 cardPopup.addEventListener('submit', handleCardFormSubmit);
 
 profileAddButtonClose.addEventListener('click', () => {
-    closeModal(cardPopup);
+    closeModal(currentOpenPopup);
 })
 
 imagePopupCloseButton.addEventListener('click', () => {
-    closeModal(imagePopup);
+    closeModal(currentOpenPopup);
 })
 
 /**
@@ -102,6 +104,9 @@ imagePopupCloseButton.addEventListener('click', () => {
  */
 function openModal(popup) {
     popup.classList.add('popup_is-opened');
+    currentOpenPopup = popup;
+
+    popup.addEventListener('mousedown', handleOverlayClose);
 }
 
 /**
@@ -110,6 +115,25 @@ function openModal(popup) {
  */
 function closeModal(popup) {
     popup.classList.remove('popup_is-opened');
+    currentOpenPopup = null;
+
+    popup.removeEventListener('mousedown', handleOverlayClose);
+}
+
+function handleEscClose(evt) {
+    if (evt.key === 'Escape' && currentOpenPopup) {
+        closeModal(currentOpenPopup);
+    }
+}
+
+function handleOverlayClose(evt) {
+    if (
+        evt.target === evt.currentTarget &&
+        currentOpenPopup &&
+        !evt.target.closest('.popup__content')
+    ) {
+        closeModal(currentOpenPopup);
+    }
 }
 
 /**
@@ -145,6 +169,10 @@ function createCard(card) {
 }
 
 
+const formsList = document.querySelectorAll('.popup__form');
+console.log(formsList);
+
+document.addEventListener('keydown', handleEscClose);
 
 //When page open --> create card for each element of array from cards.js
 initialCards.forEach((card) => {
