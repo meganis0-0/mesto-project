@@ -15,6 +15,9 @@ function createCard(card, handleImageClick) {
     const likeButton = cardElement.querySelector('.card__like-button');
     likeButton.addEventListener('click', handleLikeClick);
   
+    const likeCounter = cardElement.querySelector('.cards__counter-likes');
+    likeCounter.textContent = card.likes.length;
+
     const deleteButton = cardElement.querySelector('.card__delete-button');
     deleteButton.addEventListener('click', handleDeleteClick);
   
