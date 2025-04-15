@@ -12,6 +12,10 @@ export const profileName = document.querySelector('.profile__title');
 export const profileDescription = document.querySelector('.profile__description');
 export const profileAvatar = document.querySelector('.profile__image');
 
+//Initialize form for profile
+export const profileFormName = profilePopup.querySelector('.popup__input_type_name');
+export const profileFormDescription = profilePopup.querySelector('.popup__input_type_description');
+
 // Initialize profile edit popup buttons
 export const profileEditButton = document.querySelector('.profile__edit-button');
 export const profileEditCloseButton = document.querySelector('.popup_type_edit .popup__close');

@@ -1,4 +1,5 @@
 import './index.css';
+
 import {
   popupList,
   profilePopup,
@@ -8,6 +9,8 @@ import {
   profileName,
   profileDescription,
   profileAvatar,
+  profileFormName,
+  profileFormDescription,
   profileEditButton,
   profileEditCloseButton,
   profileAddButton,
@@ -28,7 +31,7 @@ fetch(`${baseurl}/users/me`, {
   headers: {
     authorization: authToken
   }
-})
+  })
   .then (res => res.json())
   .then ((res) => {
     profileName.textContent = res.name;
@@ -39,8 +42,8 @@ fetch(`${baseurl}/users/me`, {
 // Events for edit profile
 profileEditButton.addEventListener('click', () => {
   openModal(profilePopup);
-  profilePopup.querySelector('.popup__input_type_name').value = profileName.textContent;
-  profilePopup.querySelector('.popup__input_type_description').value = profileDescription.textContent;
+  profileFormName.value = profileName.textContent;
+  profileFormDescription.value = profileDescription.textContent;
 });
 
 profileEditCloseButton.addEventListener('click', () => closeModal(profilePopup));
@@ -79,9 +82,22 @@ cardForm.addEventListener('submit', handleCardFormSubmit);
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
 
-  const nameInput = profilePopup.querySelector('.popup__input_type_name');
-  const jobInput = profilePopup.querySelector('.popup__input_type_description');
+  const nameInput = profileFormName;
+  const jobInput = profileFormDescription;
 
+  fetch(`${baseurl}/users/me`, {
+    method: 'PATCH',
+    headers: {
+      authorization: authToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: nameInput.value,
+      about: jobInput.value
+    })   
+  });
+
+  //Update profile info in the UI
   profileName.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
   closeModal(profilePopup);
