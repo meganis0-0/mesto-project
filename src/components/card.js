@@ -1,3 +1,5 @@
+import { baseurl, authToken } from '../utils/apiconfig';
+
 /**
  * Function for creating new card using template
  * @param {Card} card  
@@ -20,7 +22,7 @@ function createCard(card, currentUserId, handleImageClick) {
 
     const deleteButton = cardElement.querySelector('.card__delete-button');
     if (card.owner._id === currentUserId) {        
-        deleteButton.addEventListener('click', handleDeleteClick);
+        deleteButton.addEventListener('click',  handleDeleteClick.bind(null, card._id));
     } else {
         deleteButton.remove();
     }
@@ -43,8 +45,28 @@ function handleLikeClick(evt) {
  * Function for add Delete button functional
  * @param {Event} evt 
  */
-function handleDeleteClick(evt) {
-    evt.target.closest('.card').remove();
+function handleDeleteClick(cardId, evt) {
+    const cardElement = evt.target.closest('.card');
+
+    fetch(`${baseurl}/cards/${cardId}`, {
+        method: 'DELETE',
+        headers: {
+            authorization: authToken,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Ошибка при удалении карточки');
+        }
+        return res.json();
+    })
+    .then(() => {
+        cardElement.remove();
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
 }
 
 export { createCard };

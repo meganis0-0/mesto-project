@@ -82,8 +82,7 @@ function handleCardFormSubmit(evt) {
   })
     .then((res) => res.json())
     .then((res) => {
-      const newCard = { name: res.name, link: res.link };
-      const card = createCard(newCard, handleImageClick);
+      const card = createCard(res, currentUserId, handleImageClick);
       cardContainer.prepend(card);
   })
 
