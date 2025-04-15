@@ -26,6 +26,8 @@ import { enableValidation } from '../components/validation.js';
 import { createCard } from '../components/card.js';
 import { openModal, closeModal } from '../components/modal.js';
 
+let currentUserId = null;
+
 fetch(`${baseurl}/users/me`, {
   headers: {
     authorization: authToken
@@ -36,7 +38,9 @@ fetch(`${baseurl}/users/me`, {
     profileName.textContent = res.name;
     profileDescription.textContent = res.about;
     profileAvatar.style.backgroundImage = `url(${res.avatar})`;
+    currentUserId = res._id;
   })
+
 
 // Events for edit profile
 profileEditButton.addEventListener('click', () => {
@@ -146,7 +150,7 @@ fetch(`${baseurl}/cards`, {
 .then((res) => res.json())
 .then((cards) => {
   cards.forEach((card) => {
-    const cardElement = createCard(card, handleImageClick);
+    const cardElement = createCard(card, currentUserId, handleImageClick);
     cardContainer.append(cardElement);
   });
 });

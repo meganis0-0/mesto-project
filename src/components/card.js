@@ -4,7 +4,7 @@
  * @param {*} handleImageClick 
  * @returns 
  */
-function createCard(card, handleImageClick) {
+function createCard(card, currentUserId, handleImageClick) {
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
     
@@ -19,7 +19,11 @@ function createCard(card, handleImageClick) {
     likeCounter.textContent = card.likes.length;
 
     const deleteButton = cardElement.querySelector('.card__delete-button');
-    deleteButton.addEventListener('click', handleDeleteClick);
+    if (card.owner._id === currentUserId) {        
+        deleteButton.addEventListener('click', handleDeleteClick);
+    } else {
+        deleteButton.remove();
+    }
   
     const imageButton = cardElement.querySelector('.card__image');
     imageButton.addEventListener('click', () => handleImageClick(card));
