@@ -66,10 +66,24 @@ function handleCardFormSubmit(evt) {
   const newCardName = cardForm.querySelector('.popup__input_type_card-name').value;
   const newCardLink = cardForm.querySelector('.popup__input_type_url').value;
   
-  const newCard = { name: newCardName, link: newCardLink };
-  const card = createCard(newCard, handleImageClick);
+  fetch(`${baseurl}/cards`, {
+    method: 'POST',
+    headers: {
+      authorization: authToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: newCardName,
+      link: newCardLink,
+    }),
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      const newCard = { name: res.name, link: res.link };
+      const card = createCard(newCard, handleImageClick);
+      cardContainer.prepend(card);
+  })
 
-  cardContainer.prepend(card);
   closeModal(cardPopup);
 }
 

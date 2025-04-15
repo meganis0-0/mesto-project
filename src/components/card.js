@@ -20,7 +20,7 @@ function createCard(card, handleImageClick) {
   
     const imageButton = cardElement.querySelector('.card__image');
     imageButton.addEventListener('click', () => handleImageClick(card));
-  
+
     return cardElement;
 }
   
