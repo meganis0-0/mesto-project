@@ -7,6 +7,7 @@ import {
   cardContainer,
   profileName,
   profileDescription,
+  profileAvatar,
   profileEditButton,
   profileEditCloseButton,
   profileAddButton,
@@ -22,6 +23,18 @@ import { initialCards } from '../scripts/cards.js';
 import { enableValidation } from '../components/validation.js';
 import { createCard } from '../components/card.js';
 import { openModal, closeModal } from '../components/modal.js';
+
+fetch(`${baseurl}/users/me`, {
+  headers: {
+    authorization: authToken
+  }
+})
+  .then (res => res.json())
+  .then ((res) => {
+    profileName.textContent = res.name;
+    profileDescription.textContent = res.about;
+    profileAvatar.style.backgroundImage = `url(${res.avatar})`;
+  })
 
 // Events for edit profile
 profileEditButton.addEventListener('click', () => {

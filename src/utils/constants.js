@@ -10,6 +10,7 @@ export const cardContainer = document.querySelector('.places__list');
 // Initialize profile
 export const profileName = document.querySelector('.profile__title');
 export const profileDescription = document.querySelector('.profile__description');
+export const profileAvatar = document.querySelector('.profile__image');
 
 // Initialize profile edit popup buttons
 export const profileEditButton = document.querySelector('.profile__edit-button');
