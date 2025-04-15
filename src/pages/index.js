@@ -1,43 +1,27 @@
-import '../pages/index.css';
-import { initialCards } from './cards.js';
+import './index.css';
+import {
+  popupList,
+  profilePopup,
+  cardPopup,
+  imagePopup,
+  cardContainer,
+  profileName,
+  profileDescription,
+  profileEditButton,
+  profileEditCloseButton,
+  profileAddButton,
+  profileAddButtonClose,
+  cardForm,
+  imagePopupCloseButton,
+  validationSettings,
+} from '../utils/constants.js'
+
+import { baseurl, authToken } from '../utils/apiconfig.js';
+
+import { initialCards } from '../scripts/cards.js';
 import { enableValidation } from '../components/validation.js';
 import { createCard } from '../components/card.js';
 import { openModal, closeModal } from '../components/modal.js';
-
-// Create object which contains validation classes
-const validationSettings = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-};
-
-// Initialize all popups
-const popupList = document.querySelectorAll('.popup');
-const profilePopup = document.querySelector('.popup_type_edit');
-const cardPopup = document.querySelector('.popup_type_new-card');
-const imagePopup = document.querySelector('.popup_type_image');
-
-// Initialize template for cards
-const cardContainer = document.querySelector('.places__list');
-
-// Initialize profile
-const profileName = document.querySelector('.profile__title');
-const profileDescription = document.querySelector('.profile__description');
-
-// Initialize profile edit popup buttons
-const profileEditButton = document.querySelector('.profile__edit-button');
-const profileEditCloseButton = document.querySelector('.popup_type_edit .popup__close');
-
-// Initialize add card popup buttons
-const profileAddButton = document.querySelector('.profile__add-button');
-const profileAddButtonClose = document.querySelector('.popup_type_new-card .popup__close');
-const cardForm = document.querySelector('.popup_type_new-card .popup__form');
-
-// Initialize image popup buttons
-const imagePopupCloseButton = document.querySelector('.popup_type_image .popup__close');
 
 // Events for edit profile
 profileEditButton.addEventListener('click', () => {
