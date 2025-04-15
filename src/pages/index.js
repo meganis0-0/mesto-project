@@ -22,7 +22,6 @@ import {
 
 import { baseurl, authToken } from '../utils/apiconfig.js';
 
-import { initialCards } from '../scripts/cards.js';
 import { enableValidation } from '../components/validation.js';
 import { createCard } from '../components/card.js';
 import { openModal, closeModal } from '../components/modal.js';
@@ -135,10 +134,21 @@ imagePopupCloseButton.addEventListener('click', () => closeModal(imagePopup));
 // Add open animation for each popup
 popupList.forEach(popup => popup.classList.add('popup_is-animated'));
 
-// Initialize cards
-initialCards.forEach((card) => {
-  const cardElement = createCard(card, handleImageClick);
-  cardContainer.append(cardElement);
+
+// Create cards
+fetch(`${baseurl}/cards`, {
+  method: 'GET',
+  headers: {
+    authorization: authToken,
+    'Content-Type': 'application/json'
+  }
+})
+.then((res) => res.json())
+.then((cards) => {
+  cards.forEach((card) => {
+    const cardElement = createCard(card, handleImageClick);
+    cardContainer.append(cardElement);
+  });
 });
 
 // Enable validation
