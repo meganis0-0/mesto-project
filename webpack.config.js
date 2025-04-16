@@ -8,7 +8,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.js',
-    publicPath: '/', // Важно для корректного разрешения путей в CSS и HTML
+    publicPath: '', // Важно для корректного разрешения путей в CSS и HTML
     assetModuleFilename: 'images/[name][ext]' // Универсальное правило для всех ассетов
   },
   mode: 'development',
