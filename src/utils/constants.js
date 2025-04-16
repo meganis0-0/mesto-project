@@ -1,5 +1,6 @@
 // Initialize all popups
 export const popupList = document.querySelectorAll('.popup');
+export const profileAvatarPopup = document.querySelector('.popup_type_edit-avatar');
 export const profilePopup = document.querySelector('.popup_type_edit');
 export const cardPopup = document.querySelector('.popup_type_new-card');
 export const imagePopup = document.querySelector('.popup_type_image');
@@ -15,6 +16,11 @@ export const profileAvatar = document.querySelector('.profile__image');
 //Initialize form for profile
 export const profileFormName = profilePopup.querySelector('.popup__input_type_name');
 export const profileFormDescription = profilePopup.querySelector('.popup__input_type_description');
+
+//Initialize form for avatar
+export const profileAvatarPopupButton = document.querySelector('.profile .profile__edit-avatar-button');
+export const profileAvatarPopupClose = profileAvatarPopup.querySelector('.popup__close');
+export const profileAvatarForm = profileAvatarPopup.querySelector('.popup__form');
 
 // Initialize profile edit popup buttons
 export const profileEditButton = document.querySelector('.profile__edit-button');
