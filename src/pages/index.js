@@ -3,6 +3,7 @@ import './index.css';
 import {
   popupList,
   profilePopup,
+  profileAvatarPopup,
   cardPopup,
   imagePopup,
   cardContainer,
@@ -11,6 +12,9 @@ import {
   profileAvatar,
   profileFormName,
   profileFormDescription,
+  profileAvatarPopupButton,
+  profileAvatarPopupClose,
+  profileAvatarForm,
   profileEditButton,
   profileEditCloseButton,
   profileAddButton,
@@ -50,6 +54,37 @@ profileEditButton.addEventListener('click', () => {
 });
 
 profileEditCloseButton.addEventListener('click', () => closeModal(profilePopup));
+
+profileAvatarPopupButton.addEventListener('click', () => {
+  openModal(profileAvatarPopup);
+})
+
+profileAvatarPopupClose.addEventListener('click', () => closeModal(profileAvatarPopup));
+
+profileAvatarForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  const newAvatarUrl = profileAvatarForm.querySelector('.popup__input_type_url').value;
+
+  fetch(`${baseurl}/users/me/avatar `, {
+    method: 'PATCH',
+    headers: {
+      authorization: authToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ avatar: newAvatarUrl })
+  })
+  .then(res => {
+    if (!res.ok) throw new Error('Update avatar error');
+    return res.json();
+  })
+  .then(data => {
+    document.querySelector('.profile__image').style.backgroundImage = `url('${data.avatar}')`;
+    closeModal(profileAvatarPopup);
+    profileAvatarForm.reset();
+  })
+  .catch(err => console.error(err));
+
+});
 
 // Events for adding new card
 profileAddButton.addEventListener('click', () => {
