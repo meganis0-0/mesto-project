@@ -8,19 +8,19 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.js',
-    publicPath: '/', // Важно для корректного разрешения путей в CSS и HTML
-    assetModuleFilename: 'images/[name][ext]' // Универсальное правило для всех ассетов
+    publicPath: '/', 
+    assetModuleFilename: 'images/[name][ext]' 
   },
   mode: 'development',
   devServer: {
     static: {
-      directory: path.join(__dirname, 'dist'), // Новый синтаксис для static
-      watch: true, // Автоматическая перезагрузка при изменениях
+      directory: path.join(__dirname, 'dist'), 
+      watch: true,
     },
     compress: true,
     port: 8080,
     open: true,
-    hot: true, // Включение Hot Module Replacement
+    hot: true,
   },
   module: {
     rules: [
@@ -31,29 +31,29 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env'],
-            cacheDirectory: true // Кеширование для ускорения сборки
+            cacheDirectory: true 
           }
         }
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif|woff(2)?|eot|ttf|otf)$/,
-        type: 'asset/resource', // Автоматическая обработка ресурсов
+        type: 'asset/resource', 
         generator: {
-          filename: 'images/[name][ext]' // Сохранять в dist/images
+          filename: 'images/[name][ext]' 
         }
       },
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader, // Извлечение CSS в отдельный файл
+          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
-              esModule: false // Решение проблем с относительными путями
+              esModule: false 
             }
           },
-          'postcss-loader' // Постобработка CSS
+          'postcss-loader' 
         ]
       }
     ]
@@ -61,14 +61,14 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
-      minify: { // Минификация HTML в production
+      minify: { 
         collapseWhitespace: true,
         removeComments: true
       }
     }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'style.css' // Имя выходного CSS-файла
+      filename: 'style.css' 
     }),
   ]
 };
