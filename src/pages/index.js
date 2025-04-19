@@ -24,7 +24,7 @@ import {
   validationSettings,
 } from '../utils/constants.js'
 
-import { baseurl, authToken } from '../utils/apiconfig.js';
+import { getUserInfo, patchUserAvatar } from '../components/api.js'
 
 import { enableValidation } from '../components/validation.js';
 import { createCard } from '../components/card.js';
@@ -32,12 +32,7 @@ import { openModal, closeModal } from '../components/modal.js';
 
 let currentUserId = null;
 
-fetch(`${baseurl}/users/me`, {
-  headers: {
-    authorization: authToken
-  }
-  })
-  .then (res => res.json())
+getUserInfo()
   .then ((res) => {
     profileName.textContent = res.name;
     profileDescription.textContent = res.about;
@@ -65,24 +60,12 @@ profileAvatarForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const newAvatarUrl = profileAvatarForm.querySelector('.popup__input_type_url').value;
 
-  fetch(`${baseurl}/users/me/avatar `, {
-    method: 'PATCH',
-    headers: {
-      authorization: authToken,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ avatar: newAvatarUrl })
-  })
-  .then(res => {
-    if (!res.ok) throw new Error('Update avatar error');
-    return res.json();
-  })
+  patchUserAvatar(newAvatarUrl)
   .then(data => {
     document.querySelector('.profile__image').style.backgroundImage = `url('${data.avatar}')`;
     closeModal(profileAvatarPopup);
     profileAvatarForm.reset();
-  })
-  .catch(err => console.error(err));
+  });
 
 });
 
