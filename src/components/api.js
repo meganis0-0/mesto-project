@@ -25,3 +25,46 @@ export function patchUserAvatar(newAvatarUrl) {
         })
         .catch(err => console.error(err));
 }
+
+export function getInitialCards() {
+    return fetch(`${baseurl}/cards`, {
+        method: 'GET',
+        headers: {
+          authorization: authToken,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then((res) => res.json())
+      .catch((err) => console.error(err));
+}
+
+export function createNewCard(newCardName, newCardLink){
+  fetch(`${baseurl}/cards`, {
+    method: 'POST',
+    headers: {
+      authorization: authToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: newCardName,
+      link: newCardLink,
+    }),
+  })
+    .then((res) => res.json())
+    .catch((err) => console.error(err));
+}
+
+export function editProfile(newName, newAbout) {
+    return fetch(`${baseurl}/users/me`, {
+        method: 'PATCH',
+        headers: {
+            authorization: authToken,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: newName,
+            about: newAbout
+        })
+    })
+    .catch((err) => console.error(err));
+}

@@ -24,7 +24,7 @@ import {
   validationSettings,
 } from '../utils/constants.js'
 
-import { getUserInfo, patchUserAvatar } from '../components/api.js'
+import { getUserInfo, patchUserAvatar, getInitialCards, createNewCard, editProfile } from '../components/api.js'
 
 import { enableValidation } from '../components/validation.js';
 import { createCard } from '../components/card.js';
@@ -87,18 +87,7 @@ function handleCardFormSubmit(evt) {
   const newCardName = cardForm.querySelector('.popup__input_type_card-name').value;
   const newCardLink = cardForm.querySelector('.popup__input_type_url').value;
   
-  fetch(`${baseurl}/cards`, {
-    method: 'POST',
-    headers: {
-      authorization: authToken,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: newCardName,
-      link: newCardLink,
-    }),
-  })
-    .then((res) => res.json())
+  createNewCard(newCardName, newCardLink)
     .then((res) => {
       const card = createCard(res, currentUserId, handleImageClick);
       cardContainer.prepend(card);
@@ -116,20 +105,10 @@ cardForm.addEventListener('submit', handleCardFormSubmit);
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
 
-  const nameInput = profileFormName;
-  const jobInput = profileFormDescription;
+  const nameInput = profileFormName.value;
+  const jobInput = profileFormDescription.value;
 
-  fetch(`${baseurl}/users/me`, {
-    method: 'PATCH',
-    headers: {
-      authorization: authToken,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      name: nameInput.value,
-      about: jobInput.value
-    })   
-  });
+  editProfile(nameInput, jobInput);
 
   //Update profile info in the UI
   profileName.textContent = nameInput.value;
@@ -157,14 +136,7 @@ popupList.forEach(popup => popup.classList.add('popup_is-animated'));
 
 
 // Create cards
-fetch(`${baseurl}/cards`, {
-  method: 'GET',
-  headers: {
-    authorization: authToken,
-    'Content-Type': 'application/json'
-  }
-})
-.then((res) => res.json())
+getInitialCards()
 .then((cards) => {
   cards.forEach((card) => {
     const cardElement = createCard(card, currentUserId, handleImageClick);
